@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recommendation System</title>
+  </head>
+  <body>
+    <h1>Recommendation System</h1>
+
+    <form id="recommendForm">
+      <label for="contentID">Enter Content ID:</label>
+      <input type="text" id="contentID" name="contentID" />
+      <br />
+      <button type="button" onclick="getRecommendations()">
+        Get Recommendations
+      </button>
+    </form>
+
+    <div id="results"></div>
+
+    <script>
+      async function getRecommendations() {
+        const contentID = document.getElementById("contentID").value; // Collect contentID
+
+        const response = await fetch("/recommend", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ contentID }), // Send contentID
+        });
+
+        const data = await response.json();
+        document.getElementById("results").innerHTML = `
+                <h3>Collaborative Filtering:</h3> <p>${
+                  data.collaborative?.join(", ") || "Error"
+                }</p>
+                <h3>Content Filtering:</h3> <p>${
+                  data.content?.join(", ") || "Error"
+                }</p>
+                <h3>Azure ML:</h3> <p>${data.azure?.join(", ") || "Error"}</p>
+            `;
+      }
+    </script>
+  </body>
+</html>
